@@ -3,554 +3,409 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NFC Forwarder - Inscription</title>
+    <title>NFC Forwarder - Configuration</title>
+    <link rel="stylesheet" href="/css/style.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: #0f172a;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            line-height: 1.5;
-        }
-
-        .container {
-            max-width: 1000px;
-            width: 100%;
-            background: #ffffff;
-            border-radius: 32px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            overflow: hidden;
-            position: relative;
-        }
-
-        /* Effet de vague en arrière-plan */
-        .container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 200px;
-            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
-            clip-path: polygon(0 0, 100% 0, 100% 60%, 0 100%);
-            z-index: 0;
-        }
-
-        .content {
-            position: relative;
-            z-index: 1;
-            padding: 48px;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .badge {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 100px;
-            font-size: 14px;
-            font-weight: 500;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .header h1 {
-            font-size: 48px;
-            font-weight: 800;
-            color: white;
-            margin-bottom: 12px;
-            text-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .header p {
-            font-size: 18px;
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        /* Grille des fonctionnalités */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-            margin-bottom: 48px;
-            background: white;
-            border-radius: 24px;
-            padding: 32px;
-            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.1);
-        }
-
-        .feature {
-            text-align: center;
-        }
-
-        .feature-icon {
-            width: 64px;
-            height: 64px;
-            background: #eef2ff;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 16px;
-            font-size: 32px;
-            color: #2563eb;
-            transition: all 0.3s ease;
-        }
-
-        .feature:hover .feature-icon {
-            background: #2563eb;
-            color: white;
-            transform: scale(1.1);
-        }
-
-        .feature h3 {
-            font-size: 18px;
-            font-weight: 600;
-            color: #1e293b;
-            margin-bottom: 8px;
-        }
-
-        .feature p {
-            font-size: 14px;
-            color: #64748b;
-        }
-
-        /* Formulaire */
-        .form-container {
-            background: white;
-            border-radius: 24px;
-            padding: 32px;
-            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.1);
-        }
-
-        .steps {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 40px;
-            gap: 8px;
-        }
-
-        .step-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .step-number {
-            width: 40px;
-            height: 40px;
-            border-radius: 40px;
-            background: #e2e8f0;
-            color: #64748b;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .step-item.active .step-number {
-            background: #2563eb;
-            color: white;
-            box-shadow: 0 10px 20px -5px rgba(37, 99, 235, 0.3);
-        }
-
-        .step-line {
-            width: 60px;
-            height: 2px;
-            background: #e2e8f0;
-        }
-
-        .step-item.active .step-line {
-            background: #2563eb;
-        }
-
-        .step-label {
-            font-size: 14px;
-            font-weight: 500;
-            color: #94a3b8;
-        }
-
-        .step-item.active .step-label {
-            color: #2563eb;
-        }
-
-        .form-section {
-            display: none;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .form-section.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .form-group {
-            margin-bottom: 24px;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 14px;
-            font-weight: 600;
-            color: #1e293b;
-            margin-bottom: 8px;
-        }
-
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            padding: 14px 16px;
-            border: 2px solid #e2e8f0;
-            border-radius: 16px;
-            font-size: 16px;
-            transition: all 0.3s ease;
+        /* Styles supplémentaires */
+        .payment-section {
             background: #f8fafc;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: #2563eb;
-            background: white;
-            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
-        }
-
-        .form-group input::placeholder {
-            color: #94a3b8;
-        }
-
-        .help-text {
-            font-size: 13px;
-            color: #64748b;
-            margin-top: 8px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .help-text svg {
-            width: 16px;
-            height: 16px;
-            fill: none;
-            stroke: #64748b;
-        }
-
-        .info-box {
-            background: #eef2ff;
             border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            border: 2px solid #e2e8f0;
+        }
+        .payment-method {
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
             padding: 20px;
-            margin: 24px 0;
-            border: 1px solid #c7d2fe;
-        }
-
-        .info-box h4 {
-            color: #1e3a8a;
-            margin-bottom: 12px;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .info-box code {
-            background: #ffffff;
-            padding: 12px;
-            border-radius: 12px;
-            display: block;
-            font-family: 'Menlo', monospace;
-            font-size: 14px;
-            color: #1e293b;
-            border: 1px solid #c7d2fe;
-            word-break: break-all;
-        }
-
-        .button-group {
-            display: flex;
-            gap: 16px;
-            margin-top: 32px;
-        }
-
-        .button {
-            flex: 1;
-            padding: 16px 24px;
-            border: none;
-            border-radius: 16px;
-            font-size: 16px;
-            font-weight: 600;
+            margin-bottom: 15px;
             cursor: pointer;
             transition: all 0.3s ease;
-            text-decoration: none;
-            text-align: center;
+            display: flex;
+            align-items: center;
+            gap: 20px;
         }
-
-        .button-primary {
-            background: #2563eb;
-            color: white;
-            box-shadow: 0 10px 20px -5px rgba(37, 99, 235, 0.3);
+        .payment-method:hover {
+            border-color: var(--primary);
+            background: #f5f3ff;
         }
-
-        .button-primary:hover:not(:disabled) {
-            background: #1d4ed8;
-            transform: translateY(-2px);
-            box-shadow: 0 20px 30px -8px rgba(37, 99, 235, 0.4);
+        .payment-method.selected {
+            border-color: var(--primary);
+            background: #f5f3ff;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2);
         }
-
-        .button-secondary {
-            background: #e2e8f0;
-            color: #1e293b;
+        .payment-method input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary);
         }
-
-        .button-secondary:hover {
-            background: #cbd5e1;
-        }
-
-        .button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .success-message {
-            text-align: center;
-            padding: 20px;
-        }
-
-        .success-message h2 {
-            font-size: 32px;
-            color: #059669;
-            margin-bottom: 24px;
-        }
-
-        .url-box {
-            background: #ecfdf5;
-            border: 2px solid #10b981;
-            border-radius: 24px;
-            padding: 32px;
-            margin: 24px 0;
-        }
-
-        .url-box p {
-            color: #047857;
-            margin-bottom: 12px;
-        }
-
-        .url-box code {
+        .card-details {
             background: white;
-            padding: 16px;
-            border-radius: 16px;
-            display: block;
-            font-size: 18px;
-            color: #065f46;
-            border: 1px solid #a7f3d0;
-            word-break: break-all;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            border: 2px solid #e2e8f0;
+            display: none;
         }
-
+        .card-details.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        .order-summary {
+            background: #f0fdf4;
+            border: 2px solid var(--success);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #cbd5e0;
+        }
+        .order-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 20px;
+            font-weight: bold;
+            color: #2f855a;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid var(--success);
+        }
+        .address-box {
+            background: #e6f7ff;
+            border-left: 5px solid #1890ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
         .loader {
-            border: 3px solid #e2e8f0;
-            border-top: 3px solid #2563eb;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--primary);
             border-radius: 50%;
             width: 40px;
             height: 40px;
             animation: spin 1s linear infinite;
             margin: 20px auto;
         }
-
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
-        .error-message {
-            background: #fee2e2;
-            border: 1px solid #ef4444;
-            border-radius: 16px;
-            padding: 16px;
-            color: #b91c1c;
-            margin: 20px 0;
+        .step-indicator {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            align-items: center;
         }
-
-        @media (max-width: 768px) {
-            .content { padding: 24px; }
-            .header h1 { font-size: 32px; }
-            .features-grid { grid-template-columns: 1fr; }
-            .steps { flex-direction: column; align-items: flex-start; }
-            .step-line { width: 2px; height: 30px; margin-left: 20px; }
+        .step-dot {
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 5px;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
     <div class="container" id="app">
+        <div class="header">
+            <h1>🚀 Commandez vos tags NFC</h1>
+            <p>Simple, rapide, reprogrammable à vie</p>
+        </div>
+
         <div class="content">
-            <div class="header">
-                <span class="badge">⚡ Bêta gratuit</span>
-                <h1>NFC Forwarder</h1>
-                <p>La redirection NFC intelligente qui s'adapte en temps réel</p>
-            </div>
-
-            <!-- Grille des fonctionnalités -->
-            <div class="features-grid">
-                <div class="feature">
-                    <div class="feature-icon">🔄</div>
-                    <h3>Modifiable à vie</h3>
-                    <p>Changez vos URLs sans jamais réécrire vos tags</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-icon">📊</div>
-                    <h3>Statistiques</h3>
-                    <p>Suivez l'utilisation de vos tags en temps réel</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-icon">⚡</div>
-                    <h3>Instantané</h3>
-                    <p>Mise à jour immédiate dans Notion</p>
+            <!-- Barre de progression -->
+            <div class="step-indicator">
+                <div v-for="n in 4" :key="n" style="flex: 1; text-align: center;">
+                    <div class="step-dot" :style="{
+                        background: step >= n ? 'var(--primary)' : '#e2e8f0',
+                        color: step >= n ? 'white' : 'var(--gray)'
+                    }">{{ n }}</div>
+                    <div :style="{ color: step >= n ? 'var(--primary)' : 'var(--gray)', fontSize: '12px' }">
+                        {{ ['Services', 'Livraison', 'Paiement', 'Configuration'][n-1] }}
+                    </div>
                 </div>
             </div>
 
-            <!-- Formulaire d'inscription -->
-            <div class="form-container">
-                <!-- Stepper -->
-                <div class="steps">
-                    <div class="step-item" :class="{ active: step >= 1 }">
-                        <div class="step-number">1</div>
-                        <span class="step-label">Informations</span>
-                    </div>
-                    <div class="step-line"></div>
-                    <div class="step-item" :class="{ active: step >= 2 }">
-                        <div class="step-number">2</div>
-                        <span class="step-label">Configuration</span>
-                    </div>
-                    <div class="step-line"></div>
-                    <div class="step-item" :class="{ active: step >= 3 }">
-                        <div class="step-number">3</div>
-                        <span class="step-label">Activation</span>
+            <!-- Étape 1 : Choix des services -->
+            <div v-if="step === 1">
+                <h2 style="margin-bottom: 20px;">📱 1. Sélectionnez vos services</h2>
+                
+                <div class="services-grid">
+                    <div v-for="service in services" 
+                         :key="service.id"
+                         class="service-card"
+                         :class="{ selected: service.quantity > 0 }">
+                        <div class="service-icon">{{ service.icon }}</div>
+                        <div class="service-name">{{ service.name }}</div>
+                        <div class="service-price">{{ service.price }}€/tag</div>
+                        
+                        <div class="quantity-selector">
+                            <button class="quantity-btn" @click="decreaseQuantity(service)" :disabled="service.quantity === 0">−</button>
+                            <span class="quantity-display">{{ service.quantity }}</span>
+                            <button class="quantity-btn" @click="increaseQuantity(service)" :disabled="service.quantity >= 50">+</button>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Étape 1 -->
-                <div class="form-section" :class="{ active: step === 1 }">
-                    <div class="form-group">
-                        <label>Nom de votre entreprise</label>
-                        <input type="text" v-model="businessName" placeholder="ex: Restaurant Chez Pierre">
+                <div class="total-section">
+                    <div class="total-row">
+                        <span>Nombre total de tags :</span>
+                        <strong>{{ totalTags }}</strong>
+                    </div>
+                    <div class="total-row">
+                        <span>Prix unitaire :</span>
+                        <strong>9,90€/tag</strong>
+                    </div>
+                    <div class="total-row total-final">
+                        <span>Total :</span>
+                        <strong>{{ totalPrice }}€</strong>
+                    </div>
+                </div>
+
+                <button class="button" @click="nextStep" :disabled="totalTags === 0">Continuer →</button>
+            </div>
+
+            <!-- Étape 2 : Adresse de livraison -->
+            <div v-if="step === 2">
+                <h2 style="margin-bottom: 20px;">📦 2. Où envoyer vos tags ?</h2>
+
+                <div class="service-summary">
+                    <div v-for="service in selectedServices" :key="service.id" class="service-tag">
+                        {{ service.icon }} {{ service.quantity }}× {{ service.name }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Nom de l'entreprise *</label>
+                    <input type="text" v-model="businessName" placeholder="ex: Restaurant Chez Pierre">
+                </div>
+
+                <div class="form-group">
+                    <label>Email professionnel *</label>
+                    <input type="email" v-model="email" placeholder="contact@exemple.fr">
+                </div>
+
+                <div class="form-group">
+                    <label>Téléphone</label>
+                    <input type="tel" v-model="phone" placeholder="Optionnel">
+                </div>
+
+                <div class="form-group">
+                    <label>Adresse de livraison *</label>
+                    <textarea v-model="address" rows="3" placeholder="Numéro, rue, code postal, ville"></textarea>
+                </div>
+
+                <div style="display: flex; gap: 10px;">
+                    <button class="button button-secondary" @click="step = 1">← Modifier mes services</button>
+                    <button class="button" @click="nextStep" :disabled="!businessName || !email || !address">Continuer →</button>
+                </div>
+            </div>
+
+            <!-- Étape 3 : Paiement -->
+            <div v-if="step === 3">
+                <h2 style="margin-bottom: 20px;">💳 3. Finaliser votre commande</h2>
+
+                <!-- Récapitulatif commande -->
+                <div class="order-summary">
+                    <h3 style="margin-bottom: 20px;">📦 Récapitulatif</h3>
+                    
+                    <div v-for="service in selectedServices" :key="service.id" class="order-item">
+                        <span>{{ service.icon }} {{ service.name }} × {{ service.quantity }}</span>
+                        <span>{{ (service.quantity * service.price).toFixed(2).replace('.', ',') }}€</span>
                     </div>
                     
-                    <div class="form-group">
-                        <label>Email professionnel</label>
-                        <input type="email" v-model="email" placeholder="contact@exemple.fr">
-                        <div class="help-text">
-                            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            Recevrez vos identifiants par email
+                    <div class="order-total">
+                        <span>Total TTC</span>
+                        <span>{{ totalPrice }}€</span>
+                    </div>
+                </div>
+
+                <!-- Adresse de livraison -->
+                <div class="address-box">
+                    <h4 style="color: #0050b3; margin-bottom: 10px;">📮 Livraison</h4>
+                    <p><strong>{{ businessName }}</strong><br>{{ address }}</p>
+                </div>
+
+                <!-- Méthodes de paiement -->
+                <div class="payment-section">
+                    <h3 style="margin-bottom: 20px;">Choisissez votre moyen de paiement</h3>
+                    
+                    <label class="payment-method" :class="{ selected: paymentMethod === 'card' }">
+                        <input type="radio" name="payment" value="card" v-model="paymentMethod">
+                        <div>
+                            <h3>💳 Carte bancaire</h3>
+                            <p>Visa, Mastercard, CB, American Express</p>
+                        </div>
+                    </label>
+
+                    <label class="payment-method" :class="{ selected: paymentMethod === 'paypal' }">
+                        <input type="radio" name="payment" value="paypal" v-model="paymentMethod">
+                        <div>
+                            <h3>🅿️ PayPal</h3>
+                            <p>Paiement sécurisé avec votre compte PayPal</p>
+                        </div>
+                    </label>
+
+                    <label class="payment-method" :class="{ selected: paymentMethod === 'bank' }">
+                        <input type="radio" name="payment" value="bank" v-model="paymentMethod">
+                        <div>
+                            <h3>🏦 Virement bancaire</h3>
+                            <p>IBAN: FR76 1234 5678 9012 3456 7890 123</p>
+                        </div>
+                    </label>
+
+                    <!-- Détails carte bancaire -->
+                    <div class="card-details" :class="{ show: paymentMethod === 'card' }">
+                        <h4 style="margin-bottom: 20px;">Informations de paiement</h4>
+                        
+                        <div class="form-group">
+                            <label>Numéro de carte</label>
+                            <input type="text" v-model="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div class="form-group">
+                                <label>Date d'expiration</label>
+                                <input type="text" v-model="cardExpiry" placeholder="MM/AA">
+                            </div>
+                            <div class="form-group">
+                                <label>CVV</label>
+                                <input type="text" v-model="cardCvv" placeholder="123" maxlength="3">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Titulaire de la carte</label>
+                            <input type="text" v-model="cardName" placeholder="JEAN DUPONT">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Message de chargement -->
+                <div v-if="loading" style="text-align: center;">
+                    <div class="loader"></div>
+                    <p style="margin-top: 20px;">Traitement du paiement en cours...</p>
+                </div>
+
+                <!-- Bouton de paiement -->
+                <button class="button" @click="processPayment" :disabled="!canPay || loading" style="margin-top: 20px;">
+                    💳 Payer {{ totalPrice }}€
+                </button>
+            </div>
+
+            <!-- Étape 4 : Configuration Notion (après paiement) -->
+            <div v-if="step === 4">
+                <h2 style="margin-bottom: 20px;">🔗 4. Configurez votre espace Notion</h2>
+
+                <div style="background: #e8f4fd; border-left: 5px solid #0284c7; padding: 25px; border-radius: 15px; margin: 25px 0;">
+                    <h3 style="color: #0369a1; margin-bottom: 15px;">✅ Paiement confirmé !</h3>
+                    <p>Merci pour votre commande. Il ne reste plus qu'à configurer votre espace Notion pour que nous puissions programmer vos tags.</p>
+                </div>
+
+                <!-- Compte Notion -->
+                <div style="background: #fff3cd; border: 2px solid #ffc107; border-radius: 15px; padding: 25px; margin: 25px 0;">
+                    <h3 style="color: #856404;">⚠️ Compte Notion requis</h3>
+                    <p style="margin: 15px 0;">
+                        Vous devez avoir un compte Notion (gratuit) pour utiliser notre service.
+                    </p>
+                    <a href="https://www.notion.so/signup" 
+                       target="_blank"
+                       class="button" 
+                       style="background: #ffc107; color: #856404; display: inline-block; width: auto; padding: 12px 30px;">
+                        📝 CRÉER UN COMPTE NOTION GRATUIT
+                    </a>
+                </div>
+
+                <!-- Guide étape par étape -->
+                <div style="background: #f0fdf4; border-left: 5px solid #22c55e; padding: 25px; border-radius: 15px; margin: 25px 0;">
+                    <h3 style="color: #15803d; margin-bottom: 20px;">🎯 Comment ça marche</h3>
+                    
+                    <div style="margin-bottom: 30px;">
+                        <div style="display: flex; gap: 15px; align-items: center; margin-bottom: 10px;">
+                            <span style="background: #22c55e; color: white; width: 30px; height: 30px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-weight: bold;">1</span>
+                            <span style="font-weight: 700;">Dupliquez notre template universel</span>
+                        </div>
+                        <p style="margin-left: 45px; margin-bottom: 15px;">
+                            Ce template contient toutes les colonnes nécessaires pour tous types de tags (URL, contacts, WiFi...).
+                        </p>
+                        <div style="margin-left: 45px;">
+                            <a href="https://www.notion.so/30b1a922a668810cb74cefae54cb295c?v=30b1a922a6688174b09c000ca295104e" 
+                               target="_blank"
+                               class="button"
+                               style="background: #22c55e; display: inline-block; width: auto; padding: 12px 30px;">
+                                📋 DUPLIQUER LE TEMPLATE
+                            </a>
                         </div>
                     </div>
 
-                    <div class="button-group">
-                        <button class="button button-primary" @click="nextStep" :disabled="!businessName || !email">Continuer →</button>
+                    <div style="margin-bottom: 30px;">
+                        <div style="display: flex; gap: 15px; align-items: center; margin-bottom: 10px;">
+                            <span style="background: #22c55e; color: white; width: 30px; height: 30px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-weight: bold;">2</span>
+                            <span style="font-weight: 700;">Copiez le lien de VOTRE base</span>
+                        </div>
+                        <p style="margin-left: 45px;">
+                            Après duplication, prenez le lien dans la barre d'adresse.
+                        </p>
+                    </div>
+
+                    <div>
+                        <div style="display: flex; gap: 15px; align-items: center; margin-bottom: 10px;">
+                            <span style="background: #22c55e; color: white; width: 30px; height: 30px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-weight: bold;">3</span>
+                            <span style="font-weight: 700;">Collez le lien ci-dessous</span>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Étape 2 -->
-                <div class="form-section" :class="{ active: step === 2 }">
-                    <div class="info-box">
-                        <h4>📚 Comment trouver l'ID de votre base ?</h4>
-                        <code>notion.so/workspace/INVENTAIRE_8219b3f5421e4f3e9f5c3a9d8a7b6c5d?v=...</code>
-                    </div>
-
-                    <div class="form-group">
-                        <label>ID de votre base "Inventaire des Tags"</label>
-                        <input type="text" v-model="databaseId" placeholder="8219b3f5421e4f3e9f5c3a9d8a7b6c5d">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Nom de la colonne UID</label>
-                        <select v-model="columnName">
-                            <option value="UID">UID (recommandé)</option>
-                            <option value="ID Tag">ID Tag</option>
-                            <option value="Identifiant">Identifiant</option>
-                        </select>
-                    </div>
-
-                    <div class="button-group">
-                        <button class="button button-secondary" @click="step = 1">← Retour</button>
-                        <button class="button button-primary" @click="nextStep" :disabled="!databaseId">Continuer →</button>
-                    </div>
+                <div class="form-group">
+                    <label>🔗 Lien de VOTRE base Notion (après duplication)</label>
+                    <input type="text" v-model="notionUrl" placeholder="https://www.notion.so/votre-base-8219b3f5...">
                 </div>
 
-                <!-- Étape 3 -->
-                <div class="form-section" :class="{ active: step === 3 }">
-                    <div style="background: #f8fafc; padding: 24px; border-radius: 20px; margin-bottom: 24px;">
-                        <p><strong>Entreprise :</strong> {{ businessName }}</p>
-                        <p><strong>Email :</strong> {{ email }}</p>
-                        <p><strong>ID Base :</strong> {{ databaseId }}</p>
-                    </div>
-
-                    <div v-if="loading" style="text-align: center;">
-                        <div class="loader"></div>
-                        <p style="color: #64748b; margin-top: 16px;">Activation de votre service...</p>
-                    </div>
-
-                    <div v-if="error" class="error-message">
-                        ❌ {{ error }}
-                    </div>
-
-                    <div class="button-group">
-                        <button class="button button-secondary" @click="step = 2" :disabled="loading">← Modifier</button>
-                        <button class="button button-primary" @click="submitForm" :disabled="loading">
-                            {{ loading ? 'Création en cours...' : '🚀 Activer mon service' }}
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Message de succès -->
-                <div class="success-message" v-if="success">
-                    <h2>✨ Félicitations !</h2>
-                    
-                    <div class="url-box">
-                        <p>Votre identifiant unique :</p>
-                        <code style="font-size: 24px; background: transparent;">{{ clientId }}</code>
-                        
-                        <p style="margin-top: 24px;">URL à écrire sur vos tags NFC :</p>
-                        <code>https://nfc-forwarder.onrender.com/r/{{ clientId }}/UID_DU_TAG</code>
-                    </div>
-
-                    <div class="info-box" style="margin-top: 24px;">
-                        <h4>📋 3 étapes pour commencer</h4>
-                        <ol style="margin-left: 20px; color: #334155;">
-                            <li>Ajoutez une colonne "URL" dans votre base Notion</li>
-                            <li>Pour chaque tag, remplissez l'URL de destination</li>
-                            <li>Écrivez l'URL ci-dessus sur vos tags NFC</li>
-                        </ol>
-                    </div>
-
-                    <button class="button button-primary" @click="resetForm" style="margin-top: 24px;">
-                        🔄 Créer un nouveau compte
-                    </button>
+                <div style="display: flex; gap: 10px;">
+                    <button class="button button-secondary" @click="step = 3">← Retour</button>
+                    <button class="button" @click="finalizeConfig" :disabled="!notionUrl">✅ Finaliser ma configuration</button>
                 </div>
             </div>
 
-            <!-- Footer -->
-            <div style="text-align: center; margin-top: 40px; color: #64748b; font-size: 14px;">
-                <p>⚡ Service 100% gratuit en bêta • <a href="#" style="color: #2563eb; text-decoration: none;">Conditions d'utilisation</a></p>
+            <!-- Succès final -->
+            <div v-if="success" class="success-box">
+                <h2>🎉 Tout est prêt !</h2>
+                
+                <div class="url-display">
+                    <strong>Votre identifiant client :</strong><br>
+                    <span style="font-size: 24px;">{{ clientId }}</span>
+                    <br><br>
+                    <strong>Référence commande :</strong> CMD-{{ orderRef }}
+                </div>
+
+                <div style="background: #ebf8ff; border-radius: 15px; padding: 25px; margin: 25px 0; text-align: left;">
+                    <h3 style="color: #2b6cb0; margin-bottom: 15px;">📋 Prochaines étapes</h3>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <strong>1️⃣ Remplissez votre base Notion</strong>
+                        <p>Indiquez les URLs, contacts ou WiFi pour chaque tag commandé.</p>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <strong>2️⃣ Nous programmons vos tags</strong>
+                        <p>Nous lisons les informations depuis votre base et programmons chaque tag.</p>
+                    </div>
+                    
+                    <div>
+                        <strong>3️⃣ Expédition</strong>
+                        <p>Vos tags programmés vous sont envoyés sous 48h à l'adresse indiquée.</p>
+                    </div>
+                </div>
+
+                <a href="/" class="button" style="display: inline-block; width: auto; padding: 15px 40px;">← Retour à l'accueil</a>
             </div>
         </div>
     </div>
@@ -561,58 +416,106 @@
             el: '#app',
             data: {
                 step: 1,
+                services: [
+                    { id: 1, name: 'Google Avis', icon: '⭐', price: 9.90, quantity: 0 },
+                    { id: 2, name: 'Instagram', icon: '📸', price: 9.90, quantity: 0 },
+                    { id: 3, name: 'Facebook', icon: '👥', price: 9.90, quantity: 0 },
+                    { id: 4, name: 'TikTok', icon: '🎵', price: 9.90, quantity: 0 },
+                    { id: 5, name: 'Site Web', icon: '🌐', price: 9.90, quantity: 0 },
+                    { id: 6, name: 'Menu PDF', icon: '📄', price: 9.90, quantity: 0 },
+                    { id: 7, name: 'WiFi Pass', icon: '📶', price: 9.90, quantity: 0 },
+                    { id: 8, name: 'Contact', icon: '📇', price: 9.90, quantity: 0 }
+                ],
                 businessName: '',
                 email: '',
-                databaseId: '',
-                columnName: 'UID',
+                phone: '',
+                address: '',
+                notionUrl: '',
+                paymentMethod: '',
+                cardNumber: '',
+                cardExpiry: '',
+                cardCvv: '',
+                cardName: '',
+                loading: false,
                 success: false,
                 clientId: '',
-                loading: false,
+                orderRef: '',
                 error: ''
             },
-            methods: {
-                nextStep() {
-                    if (this.step < 3) this.step++;
+            computed: {
+                totalTags() {
+                    return this.services.reduce((sum, s) => sum + (s.quantity || 0), 0);
                 },
-                resetForm() {
-                    this.step = 1;
-                    this.businessName = '';
-                    this.email = '';
-                    this.databaseId = '';
-                    this.columnName = 'UID';
-                    this.success = false;
-                    this.clientId = '';
-                    this.error = '';
+                totalPrice() {
+                    return (this.totalTags * 9.90).toFixed(2).replace('.', ',');
                 },
-                async submitForm() {
-                    this.loading = true;
-                    this.error = '';
-                    
-                    try {
-                        const response = await fetch('/api/signup', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                                businessName: this.businessName,
-                                email: this.email,
-                                databaseId: this.databaseId,
-                                columnName: this.columnName
-                            })
-                        });
-                        
-                        const data = await response.json();
-                        
-                        if (response.ok) {
-                            this.clientId = data.clientId;
-                            this.success = true;
-                        } else {
-                            this.error = data.error || 'Une erreur est survenue';
-                        }
-                    } catch (error) {
-                        this.error = 'Erreur de connexion au serveur';
-                    } finally {
-                        this.loading = false;
+                selectedServices() {
+                    return this.services.filter(s => s.quantity > 0);
+                },
+                canPay() {
+                    if (!this.paymentMethod) return false;
+                    if (this.paymentMethod === 'card') {
+                        return this.cardNumber && this.cardExpiry && this.cardCvv && this.cardName;
                     }
+                    return true;
+                }
+            },
+            methods: {
+                increaseQuantity(service) {
+                    if (service.quantity < 50) {
+                        service.quantity++;
+                        this.$forceUpdate();
+                    }
+                },
+                decreaseQuantity(service) {
+                    if (service.quantity > 0) {
+                        service.quantity--;
+                        this.$forceUpdate();
+                    }
+                },
+                nextStep() {
+                    if (this.step < 4) this.step++;
+                },
+                processPayment() {
+                    this.loading = true;
+                    
+                    // Simuler le paiement
+                    setTimeout(() => {
+                        this.clientId = this.businessName.toLowerCase()
+                            .replace(/[^a-z0-9]/g, '-')
+                            .substring(0, 15) + '-' + Date.now().toString().slice(-4);
+                        this.orderRef = Date.now().toString().slice(-6);
+                        this.loading = false;
+                        this.step = 4; // Aller à l'étape de configuration Notion
+                        
+                        console.log('✅ Paiement reçu:', {
+                            client: this.businessName,
+                            email: this.email,
+                            address: this.address,
+                            services: this.selectedServices,
+                            total: this.totalPrice
+                        });
+                    }, 2000);
+                },
+                finalizeConfig() {
+                    const databaseId = this.extractDatabaseId(this.notionUrl);
+                    if (!databaseId) {
+                        alert("❌ Le lien Notion n'est pas valide.");
+                        return;
+                    }
+                    
+                    // Ici vous pourriez envoyer la configuration à votre API
+                    console.log('✅ Configuration finale:', {
+                        clientId: this.clientId,
+                        notionDb: databaseId,
+                        services: this.selectedServices
+                    });
+                    
+                    this.success = true;
+                },
+                extractDatabaseId(url) {
+                    const match = url.match(/[a-f0-9]{32}/);
+                    return match ? match[0] : null;
                 }
             }
         });
